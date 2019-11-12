@@ -120,7 +120,11 @@ function cleanEnv(env, specs = {}, options = {}) {
 
     if (options.strict) output = require('./strictProxy')(output, env)
 
-    return Object.freeze(output)
+    if (options.readonly === undefined || options.readonly) {
+        return Object.freeze(output)
+    }
+
+    return output
 }
 
 /**

@@ -57,6 +57,12 @@ interface CleanOptions {
     strict?: boolean
 
     /**
+     * If false, the output of cleanEnv will be mutable.
+     * @default true
+     */
+    readonly?: boolean
+
+    /**
      * Pass in a function to override the default error handling and console output.
      * See ./reporter.js for the default implementation.
      */
@@ -73,6 +79,10 @@ interface CleanOptions {
      * @default ".env"
      */
     dotEnvPath?: string | null
+}
+
+interface MutableOptions extends CleanOptions {
+    readonly: false
 }
 
 interface StrictCleanOptions extends CleanOptions {
@@ -92,6 +102,19 @@ export function cleanEnv<T>(
     validators: { [K in keyof T]: ValidatorSpec<T[K]> },
     options: StrictCleanOptions
 ): Readonly<T> & CleanEnv
+/**
+ * Returns a sanitized, mutable environment object. _Only_ the env vars
+ * specified in the `validators` parameter will be accessible on the returned
+ * object.
+ * @param environment An object containing your env vars (eg. process.env).
+ * @param validators An object that specifies the format of required vars.
+ * @param options An object that specifies options for cleanEnv.
+ */
+export function cleanEnv<T>(
+    environment: unknown,
+    validators: { [K in keyof T]: ValidatorSpec<T[K]> },
+    options: MutableOptions
+): T & CleanEnv
 /**
  * Returns a sanitized, immutable environment object.
  * @param environment An object containing your env vars (eg. process.env).

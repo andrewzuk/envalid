@@ -36,6 +36,12 @@ test('output is immutable', () => {
     assert.strictEqual(env.FOO, 'bar')
 })
 
+test('output is mutable', () => {
+    const env = cleanEnv({ FOO: 'bar' }, { FOO: str() }, { readonly: false })
+    env.FOO = 'baz'
+    assert.strictEqual(env.FOO, 'baz')
+})
+
 test('using provided default value', () => {
     const env = cleanEnv(
         {},
